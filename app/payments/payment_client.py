@@ -50,9 +50,21 @@ class PaymentClient:
         amount: float,
         simulated_delay_seconds: float = 0.01,
     ) -> dict:
-        """Send a payment request and return the provider response."""
-        return self._send_provider_request(
-            order_id=order_id,
-            amount=amount,
-            simulated_delay_seconds=simulated_delay_seconds,
-        )
+        """Send a payment request, retrying transient timeouts when configured."""
+        retry_attempts = self.config["retry_attempts"]
+        attempts = 0
+
+        while attempts < retry_attempts:
+            attempts += 1
+
+            try:
+                return self._send_provider_request(
+                    order_id=order_id,
+                    amount=amount,
+                    simulated_delay_seconds=simulated_delay_seconds,
+                )
+            except PaymentTimeoutError:
+                if attempts >= retry_attempts:
+                    raise
+
+        raise PaymentTimeoutError("Payment request exhausted configured attempts")
