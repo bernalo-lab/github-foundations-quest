@@ -9,6 +9,10 @@ from pathlib import Path
 CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "payment.yml"
 
 
+class PaymentTimeoutError(Exception):
+    """Raised when the external payment provider exceeds our timeout."""
+
+
 class PaymentClient:
     def __init__(self):
         self.config = self._load_config()
@@ -17,17 +21,38 @@ class PaymentClient:
         with open(CONFIG_PATH, "r", encoding="utf-8") as config_file:
             return yaml.safe_load(config_file)["payment"]
 
-    def charge(self, order_id: str, amount: float) -> dict:
-        """Simulate sending a payment request to an external provider."""
+    def _send_provider_request(
+        self,
+        order_id: str,
+        amount: float,
+        simulated_delay_seconds: float = 0.01,
+    ) -> dict:
+        """Simulate a request to the external payment provider."""
         timeout_seconds = self.config["timeout_seconds"]
 
-        # Simulated provider request.
-        time.sleep(0.01)
+        if simulated_delay_seconds > timeout_seconds:
+            raise PaymentTimeoutError(
+                f"Payment provider exceeded {timeout_seconds}s timeout"
+            )
+
+        time.sleep(simulated_delay_seconds)
 
         return {
             "status": "approved",
             "reference": f"PAY-{uuid.uuid4().hex[:8].upper()}",
             "order_id": order_id,
             "amount": amount,
-            "timeout_seconds": timeout_seconds,
         }
+
+    def charge(
+        self,
+        order_id: str,
+        amount: float,
+        simulated_delay_seconds: float = 0.01,
+    ) -> dict:
+        """Send a payment request and return the provider response."""
+        return self._send_provider_request(
+            order_id=order_id,
+            amount=amount,
+            simulated_delay_seconds=simulated_delay_seconds,
+        )
