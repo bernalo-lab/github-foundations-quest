@@ -1,0 +1,4 @@
+payment:
+  provider: "ExamplePay"
+  timeout_seconds: 5
+  retry_attempts: 1
