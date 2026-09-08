@@ -36,7 +36,13 @@ If you're new to Git or GitHub, start here before moving on.
 
 This Quest assumes that Git is already installed on your computer.
 
-Open Windows Command Prompt and run:
+Open a command-line application:
+
+- **Windows:** Command Prompt, PowerShell, or Git Bash;
+- **macOS:** Terminal;
+- **Linux:** Terminal.
+
+Then run:
 
 ```
 git --version
@@ -56,7 +62,7 @@ If you receive a message saying that git is not recognised, stop here and contac
 2. Click the green **Code** button.
 3. Select **HTTPS**.
 4. Copy the repository URL.
-5. Open Windows Command Prompt.
+5. Open Command Prompt, PowerShell, Git Bash, or Terminal.
 6. Move to the folder where you want the Quest.
 7. Run the following command:
 
@@ -168,6 +174,22 @@ Search the repository for configuration or code associated with:
 
 Do not assume the first occurrence you find is the important one.
 
+#### Help 1.1 — How do I search a repository?
+
+You don't need any special tools for this — pick whichever is easiest for you:
+
+- **On GitHub, in your browser:** open the repository, press `t` on your keyboard (or use the search bar at the top of the page) and start typing a filename to jump to it. To search file *contents*, use the search box at the top of the page and select "In this repository."
+- **Locally, in an editor:** most editors (e.g. VS Code) have a "Search across files" panel — usually opened with `Ctrl+Shift+F` (Windows) or `Cmd+Shift+F` (Mac).
+- **Locally, from Terminal or Git Bash:** from inside the cloned repository folder, run:
+
+  ```
+  grep -ri "retry" .
+  ```
+
+  This searches every file for the word "retry", ignoring case. Try it again with "timeout" and "payment".
+
+Any of these approaches is fine. The goal is to find the relevant file, not to master the tool.
+
 ### Investigation Questions
 
 1. Where is payment retry behaviour configured?
@@ -211,6 +233,16 @@ Click it.
 
 #### Help 2.2 — What is a commit?
 A commit is a recorded change to the repository. Git history allows you to see what changed, when it changed, and the explanation recorded by the person who made the change.
+
+#### Help 2.3 — How do I read a diff?
+
+When you click on a commit, GitHub shows you its **diff** — the exact lines that changed.
+
+- Lines with a **red** background and a leading `-` show what was **removed** (the "before").
+- Lines with a **green** background and a leading `+` show what was **added** (the "after").
+- Lines with no colour are unchanged, shown only for context.
+
+For a configuration change, you are usually looking for one red line and one green line for the same setting — that pair is your "before" and "after."
 
 Determine:
 
@@ -270,6 +302,20 @@ Investigate the repository's:
 - CI workflow/results.
 
 Look for evidence connected to the change identified in Level 2.
+
+#### Help 3.1 — Where do I find Issues, Pull Requests, and CI results?
+
+On the repository's GitHub page, look at the row of tabs near the top (near "Code"):
+
+- **Issues** — reported problems, bugs, and feature requests. Each has a number (e.g. `#12`) and a discussion thread.
+- **Pull requests** — proposed changes. Each PR shows the diff, review comments from other people, and a status check area near the bottom.
+- **Actions** — this is where CI (Continuous Integration) runs. Each run shows which checks passed or failed, and you can click into a run to see its logs.
+
+If you cannot see one of these tabs, look under the `...` or **More** menu.
+
+A commit is often linked to the Issue or PR that caused it — look for a reference like `#12` in the commit message, or check the PR itself for "Fixes #12" style language.
+
+This is also a good moment to make sure you're signed in to a **GitHub account** — you won't need one to browse Issues and PRs, but you will need one from Level 4 onward.
 
 ### Investigation Questions
 
@@ -332,10 +378,122 @@ Now work with the repository rather than simply reading it.
 
 Create a proposed change without modifying the main branch directly.
 
+### Getting Started Help
+
+For this level, you will not make changes directly to the original Quest repository.
+
+Instead, you will create your own copy, called a **fork**. Your branch, change, and Pull Request will remain inside your fork.
+
+#### Help 4.1 — Fork the Quest repository
+
+1. Sign in to your GitHub account.
+2. Open the original Quest repository.
+3. Click **Fork** in the top-right corner.
+4. Accept the suggested repository name and create the fork.
+5. Copy the HTTPS URL of your fork.
+6. In your existing local Quest folder, update `origin` so it points to your fork:
+
+   ```
+   git remote set-url origin https://github.com/<your-username>/github-foundations-quest.git
+   ```
+
+   Replace `<your-username>` with your GitHub username.
+
+7. Confirm the new destination:
+
+   ```
+   git remote -v
+   ```
+
+Both `origin` entries should now contain your GitHub username, not `bernalo-lab`.
+
+From this point onward, anything you push to `origin` will go to your own fork.
+
+#### Help 4.2 — Create your working branch
+
+From inside the repository folder, run:
+
+```
+git switch -c fix/payment-retry-behaviour
+```
+
+This creates a new branch and moves you onto it. Your local `main` branch remains unchanged.
+
+#### Help 4.3 — Make and review your proposed change
+
+Based on your investigation, make the smallest configuration or code change that you believe addresses the duplicate payment behaviour.
+
+Save the file, then review what changed:
+
+```
+git status
+git diff
+```
+
+Check that the diff contains only the change you intended to make.
+
+#### Help 4.4 — Commit your change
+
+Add the file you changed:
+
+```
+git add <path-to-changed-file>
+```
+
+Replace `<path-to-changed-file>` with the actual file path. Do not type the angle brackets.
+
+Now commit the change:
+
+```
+git commit -m "Fix payment retry behaviour"
+```
+
+#### Help 4.5 — Push your branch
+
+Run:
+
+```
+git push -u origin fix/payment-retry-behaviour
+```
+
+The branch will be pushed to your fork, not to the original Quest repository.
+
+#### Help 4.6 — GitHub asks me to sign in
+
+GitHub does not accept your normal account password when pushing over HTTPS.
+
+If Git Credential Manager is installed, Git should open a browser window and ask you to sign in. Complete the browser sign-in and then return to the command line.
+
+If no browser window appears, stop and ask the course instructor for help before creating an access token or changing authentication settings.
+
+Personal Access Tokens and SSH are alternative authentication methods, but their setup is outside the scope of this Quest.
+
+#### Help 4.7 — Open the Pull Request inside your fork
+
+1. Open your fork on GitHub:
+
+   `https://github.com/<your-username>/github-foundations-quest`
+
+2. Open the **Pull requests** tab and click **New pull request**. GitHub may instead display a **Compare & pull request** button after your push; you can use that button.
+3. Before creating the Pull Request, check the destination carefully:
+
+   - **Base repository:** `<your-username>/github-foundations-quest`
+   - **Base branch:** `main`
+   - **Head repository:** `<your-username>/github-foundations-quest`
+   - **Compare branch:** `fix/payment-retry-behaviour`
+
+4. If the base repository says `bernalo-lab/github-foundations-quest`, change it to your own fork.
+5. Create the Pull Request inside your fork.
+6. Submit the URL of your Pull Request to the course instructor for review.
+
+Do **not** open the Pull Request against the original `bernalo-lab/github-foundations-quest` repository.
+
+Do **not** merge the Pull Request. The objective is to propose and explain the change so that another engineer can review it.
+
 ### Objectives
 
 1. Create a new branch.
-2. Make the required change.
+2. Make the smallest change that your investigation supports.
 3. Review your local changes.
 4. Commit the change with a meaningful commit message.
 5. Push your branch.
@@ -352,6 +510,8 @@ The objective is not merely to demonstrate that you know Git commands.
 
 Your Pull Request should allow another engineer to understand your **reasoning**.
 
+It does not need to be merged to complete this level.
+
 **LEVEL 4 COMPLETE ✓**
 
 ---
@@ -361,6 +521,8 @@ Your Pull Request should allow another engineer to understand your **reasoning**
 ## Stretch Challenge
 
 You may now use GitHub Copilot to help investigate the repository.
+
+> **Before you start:** GitHub Copilot must be available and enabled for your GitHub account. Access may come through Copilot Free, a paid plan, an education benefit, or an organisation licence. Usage limits may apply. If you don't see Copilot in your editor or on GitHub, check with your course instructor before assuming this level is broken.
 
 But there is a catch.
 
