@@ -1,5 +1,8 @@
 # Operational Timeline — INC-001
 
+**Incident date:** 7 September 2026  
+**Timezone:** UTC+01:00 (British Summer Time)
+
 This timeline was assembled from support timestamps, application logs, and dependency health checks.
 
 | Time | Event | Source | Confidence |

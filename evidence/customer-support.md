@@ -1,5 +1,8 @@
 # Customer Support Extract — INC-001
 
+**Incident date:** 7 September 2026  
+**Timezone:** UTC+01:00 (British Summer Time)
+
 The following reports were received over a 42-minute period.
 
 ---
