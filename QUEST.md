@@ -1,6 +1,6 @@
 # GitHub Foundations Quest
 
-## INC-001 — The Retry Mystery
+## INC-001 — Duplicate Payment Requests
 
 You have received the incident brief.
 
@@ -58,7 +58,7 @@ If you receive a message saying that git is not recognised, stop here and contac
 
 **Clone the Quest repository**
 
-1. Launch the 'GitHub Quest' repository at https://github.com/bernalo-lab/github-foundations-quest/
+1. Launch the 'GitHub Quest' repository at https://github.com/bernalo-lab/github-foundations-quest
 2. Click the green **Code** button.
 3. Select **HTTPS**.
 4. Copy the repository URL.
@@ -187,6 +187,14 @@ You don't need any special tools for this — pick whichever is easiest for you:
   ```
 
   This searches every file for the word "retry", ignoring case. Try it again with "timeout" and "payment".
+
+- **Locally, from PowerShell:** from inside the cloned repository folder, run:
+
+  ```powershell
+  Get-ChildItem -Recurse -File | Select-String -Pattern "retry"
+  ```
+
+  Try it again with "timeout" and "payment". Plain Windows Command Prompt does not include `grep`; use PowerShell, Git Bash, an editor, or GitHub's web search instead.
 
 Any of these approaches is fine. The goal is to find the relevant file, not to master the tool.
 
@@ -317,6 +325,18 @@ A commit is often linked to the Issue or PR that caused it — look for a refere
 
 This is also a good moment to make sure you're signed in to a **GitHub account** — you won't need one to browse Issues and PRs, but you will need one from Level 4 onward.
 
+#### Help 3.2 — How do I read a CI result?
+
+CI means **Continuous Integration**: automated checks that run when code changes.
+
+1. Open the relevant Pull Request and find the checks or status section near the bottom.
+2. Expand the checks and open the named workflow run. You can also find the run from the repository's **Actions** tab.
+3. Select the job, then expand its steps to read the log output.
+4. Look for the first failed step and its error message. Later failures may be consequences of that first failure.
+5. Record the workflow name, job or check name, status, and the relevant message.
+
+A green check means the automated checks that were configured passed. It does **not** prove that every production risk or customer scenario was tested.
+
 ### Investigation Questions
 
 1. Was there an Issue associated with the change?
@@ -386,12 +406,15 @@ Instead, you will create your own copy, called a **fork**. Your branch, change, 
 
 #### Help 4.1 — Fork the Quest repository
 
+**Before you begin:** a fork copies the repository's code and commit history. It does not copy the original repository's Issues, Pull Requests, review discussions, or previous Actions runs. The Issue, Pull Request, and CI evidence you investigated in Level 3 remains in the original `bernalo-lab` repository. Keep the original repository open in another browser tab if you need to refer back to it.
+
 1. Sign in to your GitHub account.
 2. Open the original Quest repository.
 3. Click **Fork** in the top-right corner.
 4. Accept the suggested repository name and create the fork.
-5. Copy the HTTPS URL of your fork.
-6. In your existing local Quest folder, update `origin` so it points to your fork:
+5. Open the **Actions** tab in your fork. If GitHub displays a warning that workflows are disabled on this fork, select **I understand my workflows, go ahead and enable them**. This is a one-time step. If no warning appears, continue.
+6. Copy the HTTPS URL of your fork.
+7. In your existing local Quest folder, update `origin` so it points to your fork:
 
    ```
    git remote set-url origin https://github.com/<your-username>/github-foundations-quest.git
@@ -399,7 +422,7 @@ Instead, you will create your own copy, called a **fork**. Your branch, change, 
 
    Replace `<your-username>` with your GitHub username.
 
-7. Confirm the new destination:
+8. Confirm the new destination:
 
    ```
    git remote -v
@@ -431,6 +454,8 @@ git diff
 ```
 
 Check that the diff contains only the change you intended to make.
+
+If `git diff` shows every line in the file as changed when you edited only one line, stop before committing. Your editor may have changed the file's line endings. Undo the edit, preserve the file's existing line endings in your editor, and make the intended change again. Ask the course instructor if you are unsure.
 
 #### Help 4.4 — Commit your change
 
@@ -468,6 +493,8 @@ If no browser window appears, stop and ask the course instructor for help before
 
 Personal Access Tokens and SSH are alternative authentication methods, but their setup is outside the scope of this Quest.
 
+Git Credential Manager is not installed on every computer. On a managed work device, do not install software or change authentication settings without permission. If your organisation provides an approved GitHub sign-in method, use it. Otherwise, ask the instructor for the browser-only Level 4 route or authentication support.
+
 #### Help 4.7 — Open the Pull Request inside your fork
 
 1. Open your fork on GitHub:
@@ -486,9 +513,29 @@ Personal Access Tokens and SSH are alternative authentication methods, but their
 5. Create the Pull Request inside your fork.
 6. Submit the URL of your Pull Request to the course instructor for review.
 
+7. Open the Pull Request's checks section. If no check starts, return to your fork's **Actions** tab and confirm that workflows are enabled as described in Help 4.1.
+
 Do **not** open the Pull Request against the original `bernalo-lab/github-foundations-quest` repository.
 
 Do **not** merge the Pull Request. The objective is to propose and explain the change so that another engineer can review it.
+
+#### Help 4.8 — Sync an existing fork if the Quest changes
+
+If the instructor tells you that the original Quest repository has changed since you created your fork:
+
+1. Open the main page of your fork on GitHub.
+2. Select **Sync fork**.
+3. Select **Update branch**.
+4. In your local repository, switch to `main` and download the updated files:
+
+   ```
+   git switch main
+   git pull origin main
+   ```
+
+5. If you had already started your working branch, ask the instructor whether you should merge or rebase the updated `main` branch. Do not guess if Git reports a conflict.
+
+Only sync when the instructor announces an update; you do not need to check continuously.
 
 ### Objectives
 
@@ -522,7 +569,7 @@ It does not need to be merged to complete this level.
 
 You may now use GitHub Copilot to help investigate the repository.
 
-> **Before you start:** GitHub Copilot must be available and enabled for your GitHub account. Access may come through Copilot Free, a paid plan, an education benefit, or an organisation licence. Usage limits may apply. If you don't see Copilot in your editor or on GitHub, check with your course instructor before assuming this level is broken.
+> **Before you start:** GitHub Copilot must be available and enabled for your GitHub account. Access may come through Copilot Free, a paid plan, an education benefit, or an organisation licence. Copilot Free includes monthly usage limits; after the allowance is used, Copilot may stop responding until the allowance resets. Availability and limits can vary by plan. If you don't see Copilot in your editor or on GitHub, check your account's Copilot status and usage before assuming this level is broken.
 
 But there is a catch.
 
