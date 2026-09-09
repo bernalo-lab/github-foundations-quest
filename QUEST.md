@@ -252,6 +252,58 @@ When you click on a commit, GitHub shows you its **diff** — the exact lines th
 
 For a configuration change, you are usually looking for one red line and one green line for the same setting — that pair is your "before" and "after."
 
+#### Help 2.4 — Who changed this, and when? (Optional shortcut)
+
+You can find the commit responsible for a change by scanning history, as above. `git blame` gets you there directly when you already know which file matters but not which commit.
+
+From inside the cloned repository, run:
+
+```
+git blame config/payment.yml
+```
+
+Each line of the file is shown with the commit hash, author, and date responsible for that line — most recent change per line, not per file. Find the line containing `retry_attempts`; the commit hash beside it should match the commit you identify below.
+
+This is optional. You can complete Level 2 using history alone. Use `git blame` as a shortcut the next time you need to find "who last touched this line" without already knowing which commit to look for.
+
+#### Help 2.5 — Tracing a file's full history (Optional deeper dive)
+
+`git blame` shows you one snapshot per line. To see every change ever made to a single file, in order, run:
+
+```
+git log -p -- config/payment.yml
+```
+
+This prints every commit that touched the file, most recent first, along with its diff. If your terminal opens a pager, press `q` to exit back to the command line.
+
+If a file was ever renamed, plain `git log` stops following it at the rename. Add `--follow` to trace history through renames as well:
+
+```
+git log --follow -- config/payment.yml
+```
+
+This isn't required to complete Level 2, but once you know which file matters, it's the fastest way to build that file's complete timeline in a single command.
+
+```
+git log -S "retry_attempts" -p -- config/payment.yml
+```
+
+This searches Git history for commits that changed the number of occurrences of `retry_attempts`, then displays the relevant diffs. It is useful when you know the setting involved but do not know which commit changed it.
+
+After identifying a relevant commit hash, inspect the complete commit:
+
+```
+git show COMMIT_HASH
+```
+
+Replace `COMMIT_HASH` with the hash you found. For example, if the hash were `abc1234`, you would run:
+
+```
+git show abc1234
+```
+
+This displays the commit metadata, message and complete diff. If Git opens the output in a pager, press 'q' to return to the command line.
+
 Determine:
 
 - whether the retry behaviour changed;
